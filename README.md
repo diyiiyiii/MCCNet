@@ -1,24 +1,21 @@
 # Arbitrary Video Style Transfer via Multi-Channel Correlation
-Yingying Deng, Fan Tang, Weiming Dong, Wen Sun, Feiyue Huang, Changsheng Xu  <br>
+Yingying Deng, Fan Tang, Weiming Dong, Haibin Huang, Chongyang Ma, Changsheng Xu  <br>
 
 ## results presentation 
 <p align="center">
-<img src="https://github.com/diyiiyiii/MCCNet/result.png" width="50%" height="50%">
+<img src="https://github.com/diyiiyiii/MCCNet/blob/master/results.png" width="100%" height="100%">
 </p>
-Stylized result using Claude Monet's painting as style reference. Compared with some state-of-the-art algorithms, our result can preserve detailed content structures and maintain vivid style patterns.  <br>
+Visual comparisons of video style transfer results. The first row shows the video frame stylized results. The second row
+shows the heat maps which are used to visualize the differences between two adjacent video frame.  <br>
 
 
 ## Framework
 <p align="center">
-<img src="https://github.com/diyiiyiii/Arbitrary-Style-Transfer-via-Multi-Adaptation-Network/blob/master/framework/framework1.png" width="80%" height="80%">
+<img src="https://github.com/diyiiyiii/MCCNet/blob/master/network.png" width="80%" height="80%">
 </p> 
-System overview. For the purpose of arbitrary style transfer, we propose a feed-forward network, which contains an encoder-decoder architecture and a multi-adaptation module.
+Overall structure of MCCNet. <br>
 
 
-<p align="center">
-<img src="https://github.com/diyiiyiii/Arbitrary-Style-Transfer-via-Multi-Adaptation-Network/blob/master/framework/SACA1.png" width="80%" height="80%">
-</p> 
-The multi-adaptation module is divided into three parts: position-wise content SA module, channel-wise style SA module, and CA module.  <br>
 
 
 ## Experiment
@@ -29,8 +26,8 @@ The multi-adaptation module is divided into three parts: position-wise content S
 * tqdm  <br> 
 
 ### Testing 
-Pretrained models: [vgg-model](https://drive.google.com/file/d/1kUUNROxNmDroDuWl22JDlbN3vJBNYFZy/view?usp=sharing),  [decoder](https://drive.google.com/file/d/1BinnwM5AmIcVubr16tPTqxMjUCE8iu5M/view?usp=sharing),  [MA_module](https://drive.google.com/file/d/1C7Tx5C9YA-7fyLDAs-jmoAdOX32e1aEW/view?usp=sharing)   <br> 
-Please download them and put them into the floder  ./model/  <br> 
+Pretrained models: [vgg-model](https://drive.google.com/file/d/1kUUNROxNmDroDuWl22JDlbN3vJBNYFZy/view?usp=sharing),  [decoder](coming soon),  [MA_module](coming soon)   <br> 
+Please download them and put them into the floder  ./models/  <br> 
 ```
 python test.py  --content_dir input/content/ --style_dir input/style/    --output out
 ```
@@ -38,16 +35,16 @@ python test.py  --content_dir input/content/ --style_dir input/style/    --outpu
 Traing set is WikiArt collected from [WIKIART](https://www.wikiart.org/)  <br>  
 Testing set is COCO2014  <br>  
 ```
-python train.py --style_dir ../../datasets/Images/ --content_dir ../../datasets/train2014 --save_dir models/ --batch_size 4
+python train0.py --style_dir ../../datasets/Images --content_dir ../../datasets/train2014 --save_dir models/ --batch_size 4
 ```
 ### Reference
-If you use our work in your research, please cite us using the following BibTeX entry ~ Thank you ^ . ^. Paper Link [pdf](https://arxiv.org/abs/2005.13219)<br> 
+If you use our work in your research, please cite us using the following BibTeX entry ~ Thank you ^ . ^. Paper Link [pdf](coming soon)<br> 
 ```
 @inproceedings{deng:2020:arbitrary,
   title={Arbitrary Style Transfer via Multi-Adaptation Network},
-  author={Deng, Yingying and Tang, Fan and Dong, Weiming and Sun, Wen and Huang, Feiyue and Xu, Changsheng},
-  booktitle={Acm International Conference on Multimedia},
-  year={2020},
- publisher = {ACM},
+  author={Deng, Yingying and Tang, Fan and Dong, Weiming and Sun, Wen and Huang, haibin and Ma chongyang and Xu, Changsheng},
+  booktitle={AAAI},
+  year={2021},
+ 
 }
 ```
