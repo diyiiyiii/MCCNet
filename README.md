@@ -41,7 +41,7 @@ python train0.py --style_dir ../../datasets/Images --content_dir ../../datasets/
 If you use our work in your research, please cite us using the following BibTeX entry ~ Thank you ^ . ^. Paper Link [pdf](coming soon)<br> 
 ```
 @inproceedings{deng:2020:arbitrary,
-  title={Arbitrary Style Transfer via Multi-Adaptation Network},
+  title={Arbitrary Video Style Transfer via Multi-Channel Correlation},
   author={Deng, Yingying and Tang, Fan and Dong, Weiming and Sun, Wen and Huang, haibin and Ma chongyang and Xu, Changsheng},
   booktitle={AAAI},
   year={2021},
