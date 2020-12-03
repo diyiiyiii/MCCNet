@@ -1,7 +1,7 @@
 # Arbitrary Video Style Transfer via Multi-Channel Correlation
 Yingying Deng, Fan Tang, Weiming Dong, Haibin Huang, Chongyang Ma, Changsheng Xu  <br>
 
-## results presentation 
+## Results presentation 
 <p align="center">
 <img src="https://github.com/diyiiyiii/MCCNet/blob/main/results.png" width="100%" height="100%">
 </p>
