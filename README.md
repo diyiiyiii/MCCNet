@@ -3,7 +3,7 @@ Yingying Deng, Fan Tang, Weiming Dong, Haibin Huang, Chongyang Ma, Changsheng Xu
 
 ## results presentation 
 <p align="center">
-<img src="https://github.com/diyiiyiii/MCCNet/blob/master/results.png" width="100%" height="100%">
+<img src="https://github.com/diyiiyiii/MCCNet/blob/main/results.png" width="100%" height="100%">
 </p>
 Visual comparisons of video style transfer results. The first row shows the video frame stylized results. The second row
 shows the heat maps which are used to visualize the differences between two adjacent video frame.  <br>
@@ -11,7 +11,7 @@ shows the heat maps which are used to visualize the differences between two adja
 
 ## Framework
 <p align="center">
-<img src="https://github.com/diyiiyiii/MCCNet/blob/master/network.png" width="80%" height="80%">
+<img src="https://github.com/diyiiyiii/MCCNet/blob/main/network.png" width="80%" height="80%">
 </p> 
 Overall structure of MCCNet. <br>
 
