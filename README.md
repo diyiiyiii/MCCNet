@@ -32,7 +32,7 @@ Please download them and put them into the floder  ./models/  <br>
 python test.py  --content_dir input/content/ --style_dir input/style/    --output out
 ```
 ### Training  
-Traing set is WikiArt collected from [WIKIART](https://www.wikiart.org/)  <br>  
+Traing set is WikiArt collected from [WIKIART](https://www.kaggle.com/c/painter-by-numbers )  <br>  
 Testing set is COCO2014  <br>  
 ```
 python train.py --style_dir ../../datasets/Images --content_dir ../../datasets/train2014 --save_dir models/ --batch_size 4
