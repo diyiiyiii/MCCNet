@@ -107,9 +107,9 @@ def adjust_learning_rate(optimizer, iteration_count):
 
 parser = argparse.ArgumentParser()
 # Basic options
-parser.add_argument('--content_dir', type=str, required=True,
+parser.add_argument('--content_dir', default='../../datasets/train2014', type=str,
                     help='Directory path to a batch of content images')
-parser.add_argument('--style_dir', type=str, required=True,
+parser.add_argument('--style_dir', default='../../datasets/Images', type=str,
                     help='Directory path to a batch of style images')
 parser.add_argument('--vgg', type=str, default='./experiments/vgg_normalised.pth')
 

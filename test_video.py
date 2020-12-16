@@ -111,8 +111,8 @@ parser.add_argument('--style_dir', type=str,
                     help='Directory path to a batch of style images')
 parser.add_argument('--output', type=str, default='output',
                     help='Directory to save the output image(s)')
-parser.add_argument('--decoder_path', type=str, default='./experiments/decoder_iter_100000.pth')
-parser.add_argument('--transform_path', type=str, default='/experiments/MCC_module_iter_100000.pth')
+parser.add_argument('--decoder_path', type=str, default='./experiments/decoder_iter_160000.pth')
+parser.add_argument('--transform_path', type=str, default='./experiments/mcc_module_iter_160000.pth')
 parser.add_argument('--style_interpolation_weights', type=str, default="")
 parser.add_argument('--a', type=float, default=1.0)
 args = parser.parse_args()
@@ -249,81 +249,81 @@ for content_path in content_paths:
     else:  # process one content and one style
         for style_path in style_paths:
             start = time.time()
-            try:
+            # try:
                 #print(content_path,style_path)
                 # content = content_tf(Image.open(content_path).convert("RGB"))
                 # style = style_tf(Image.open(style_path).convert("RGB"))
-                video = cv2.VideoCapture(content_path)    
-                j = 0
-                rate = video.get(5)  #cap.get（）括号中的参数为5代表获取帧速率
-                
-                width = video.get(cv2.CAP_PROP_FRAME_WIDTH)
-                height = video.get(cv2.CAP_PROP_FRAME_HEIGHT) #获得视频帧宽和帧高
-                print(width,height)
-                fps = int(rate)
-                #print("--------",rate)
-                video_name = output_path +'/{:s}_stylized_{:s}{:s}'.format(
-                        splitext(basename(content_path))[0],splitext(basename(style_path))[0], '.mp4')
-                print(video_name)
-                videoWriter = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('D', 'I', 'V', 'X'), fps, (int(width), int(height)))
-                # try: 
-                while (video.isOpened()):
-               
-
-                    j=j+1
-                    
-                    #print(j)
-                    ret, frame = video.read()
+            video = cv2.VideoCapture(content_path)    
+            j = 0
+            rate = video.get(5)  #cap.get（）括号中的参数为5代表获取帧速率
             
-                    #print("------",frame)
-                   # print(np.shape(frame))
-                    #cv2.imwrite("pic/"+self.video_list[index]+str(j)+".jpg", frame)
-                   
-                    if j %1 ==0:
-                        print(j)
-                        output_name1 = '{:s}/{:s}/stylized_{:s}{:s}'.format(output_path, splitext(basename(content_path))[0],str("%04d" % j),save_ext)
-                        # cv2.imwrite(output_name1, frame)
-                        content_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                        if not os.path.exists('{:s}/{:s}/'.format(output_path, splitext(basename(content_path))[0])):
-                            os.makedirs('{:s}/{:s}/'.format(output_path, splitext(basename(content_path))[0]))
-                        #rgb_fraame = cv2.resize(rgb_frame, self.img_shape)
-                        #print(rgb_frame)
-                        #print("--",np.shape(rgb_frame))
-                        content_tf1 = content_transform()
-                        content_frame = content_tf(Image.fromarray(content_frame))
-                        #print(rgb_frame.size())
-                        
-                        save_image(content_frame, output_name1)
-                        # h,w,c=np.shape(content_frame)
-                        # style_tf1 = style_transform(h,w)
-                        # style = style_tf(Image.open(style_path).convert("RGB"))
-                        # if preserve_color:
-                        #     style = coral(style, content)
-                        # style = style.to(device).unsqueeze(0)
-                        # content = content_frame.to(device).unsqueeze(0)
-                        # #print("------------",content.size(),style.size())
-                        # with torch.no_grad():
-                        #     output = style_transfer(vgg, decoder, sa_module, content, style,
-                        #                             alpha)
-                        # output = output.cpu()
-                      
-                        # output_name = '{:s}/{:s}_stylized_{:s}_{:s}{:s}'.format(
-                        #     output_path, splitext(basename(content_path))[0],
-                        #     splitext(basename(style_path))[0], str(j),save_ext
-                        # )
-                        # #save_image(output, output_name)
-                        # print(output.size())
-                        # output = output.squeeze()
-                        # output = output.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).type(torch.uint8).numpy()
-       
-                        # output = cv2.cvtColor(output, cv2.COLOR_RGB2BGR)
-                        
+            width = video.get(cv2.CAP_PROP_FRAME_WIDTH)
+            height = video.get(cv2.CAP_PROP_FRAME_HEIGHT) #获得视频帧宽和帧高
+            print(width,height)
+            fps = int(rate)
+            #print("--------",rate)
+            video_name = output_path +'/{:s}_stylized_{:s}{:s}'.format(
+                    splitext(basename(content_path))[0],splitext(basename(style_path))[0], '.mp4')
+            print(video_name)
+            videoWriter = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('D', 'I', 'V', 'X'), fps, (int(width), int(height)))
+            # try: 
+            while (video.isOpened()):
+           
 
-                        
-                        # videoWriter.write(output)  # 写入帧图
-            except:
-                print("over")
-                end = time.time()
-                print(end-start)
+                j=j+1
+                
+                #print(j)
+                ret, frame = video.read()
+        
+                #print("------",frame)
+               # print(np.shape(frame))
+                #cv2.imwrite("pic/"+self.video_list[index]+str(j)+".jpg", frame)
+               
+                if j %1 ==0:
+                    print(j)
+                    output_name1 = '{:s}/{:s}/stylized_{:s}{:s}'.format(output_path, splitext(basename(content_path))[0],str("%04d" % j),save_ext)
+                    # cv2.imwrite(output_name1, frame)
+                    content_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    if not os.path.exists('{:s}/{:s}/'.format(output_path, splitext(basename(content_path))[0])):
+                        os.makedirs('{:s}/{:s}/'.format(output_path, splitext(basename(content_path))[0]))
+                    #rgb_fraame = cv2.resize(rgb_frame, self.img_shape)
+                    #print(rgb_frame)
+                    #print("--",np.shape(rgb_frame))
+                    content_tf1 = content_transform()
+                    content_frame = content_tf1(Image.fromarray(content_frame))
+                    #print(rgb_frame.size())
+                    
+                    # save_image(content_frame, output_name1)
+                    h,w,c=np.shape(content_frame)
+                    style_tf1 = style_transform(h,w)
+                    style = style_tf1(Image.open(style_path).convert("RGB"))
+                    if preserve_color:
+                        style = coral(style, content)
+                    style = style.to(device).unsqueeze(0)
+                    content = content_frame.to(device).unsqueeze(0)
+                    #print("------------",content.size(),style.size())
+                    with torch.no_grad():
+                        output = style_transfer(vgg, decoder, mcc_module, content, style,
+                                                alpha)
+                    output = output.cpu()
+                  
+                    output_name = '{:s}/{:s}_stylized_{:s}_{:s}{:s}'.format(
+                        output_path, splitext(basename(content_path))[0],
+                        splitext(basename(style_path))[0], str(j),save_ext
+                    )
+                    save_image(output, output_name)
+                    print(output.size())
+                    output = output.squeeze()
+                    output = output.mul_(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).type(torch.uint8).numpy()
+   
+                    output = cv2.cvtColor(output, cv2.COLOR_RGB2BGR)
+                    
+
+                    
+                    videoWriter.write(output)  # 写入帧图
+            # except:
+            #     print("over")
+            #     end = time.time()
+            #     print(end-start)
                         
           
