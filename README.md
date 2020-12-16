@@ -27,7 +27,7 @@ Overall structure of MCCNet. <br>
 
 ### Testing 
 Pretrained models: [vgg-model](https://drive.google.com/file/d/1kUUNROxNmDroDuWl22JDlbN3vJBNYFZy/view?usp=sharing),  [decoder](coming soon),  [MCC_module](coming soon)   <br> 
-Please download them and put them into the floder  ./models/  <br> 
+Please download them and put them into the floder  ./experiments/  <br> 
 ```
 python test.py  --content_dir input/content/ --style_dir input/style/    --output out
 ```
