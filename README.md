@@ -42,7 +42,7 @@ If you use our work in your research, please cite us using the following BibTeX 
 ```
 @inproceedings{deng:2020:arbitrary,
   title={Arbitrary Video Style Transfer via Multi-Channel Correlation},
-  author={Deng, Yingying and Tang, Fan and Dong, Weiming and Sun, Wen and Huang, haibin and Ma chongyang and Xu, Changsheng},
+  author={Deng, Yingying and Tang, Fan and Dong, Weiming and Huang, haibin and Ma chongyang and Xu, Changsheng},
   booktitle={AAAI},
   year={2021},
  
