@@ -29,7 +29,7 @@ Overall structure of MCCNet. <br>
 Pretrained models: [vgg-model](https://drive.google.com/file/d/1kUUNROxNmDroDuWl22JDlbN3vJBNYFZy/view?usp=sharing),  [decoder],  [MCC_module](see above)   <br> 
 Please download them and put them into the floder  ./experiments/  <br> 
 ```
-python test.py  --content_dir input/content/ --style_dir input/style/    --output out
+python test_video.py  --content_dir input/content/ --style_dir input/style/    --output out
 ```
 ### Training  
 Traing set is WikiArt collected from [WIKIART](https://www.kaggle.com/c/painter-by-numbers )  <br>  
