@@ -1,8 +1,8 @@
 import jittor as jt
-#import torch.backends.cudnn as cudnn #没找到替代的
+#import torch.backends.cudnn as cudnn 
 from jittor import init
 import jittor.nn as nn
-from jittor.dataset import Dataset  #不知道行不行
+from jittor.dataset import Dataset 
 from jittor.dataset import ImageFolder
 from jittor import transform
 import jittor.models as jtmodels
@@ -149,9 +149,9 @@ with jt.no_grad():
     network = net.Net(vgg, decoder)
 network.train()
 
-#decoder.eval()  #decoder设置不用学习
-#network.to(device)  #是指让这个网络在指定device上运行吗
-#network = nn.DataParallel(network, device_ids=[0,1])  ##这句也没找到合适的
+#decoder.eval() 
+#network.to(device) 
+#network = nn.DataParallel(network, device_ids=[0,1])
 
 content_tf = train_transform()
 style_tf = train_transform()
@@ -159,9 +159,9 @@ style_tf = train_transform()
 
 #jittor这里直接对获取的数据集进行lorader，不分开成功两步
 #content_dataset = FlatFolderDataset(args.content_dir, content_tf)
-#style_dataset = FlatFolderDataset(args.style_dir, style_tf)  #获得两个数据集，并预处理 #数据集只是一个数组存放了文件  #在抽取一组batch时进行预处理
+#style_dataset = FlatFolderDataset(args.style_dir, style_tf)  #获得两个数据集，并预处理 
 
-#content_iter = iter(Dataset(    #生成迭代器... 将dataloader里的数据生成迭代器，类似enumerate..?
+#content_iter = iter(Dataset(    #生成迭代器... 将dataloader里的数据生成迭代器
 #    style_dataset, batch_size=args.batch_size,
 #    sampler=InfiniteSamplerWrapper(style_dataset),
 #    num_worker = args.n_thread)
