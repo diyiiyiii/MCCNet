@@ -297,6 +297,6 @@ for content_path in content_paths:
                 with jt.no_grad():
                     output = style_transfer(vgg, decoder, mcc_module, content, style, alpha)
 
-                output.squeeze(0)
+                output = output.squeeze(0)
                 save_image(output, image_name)
 
