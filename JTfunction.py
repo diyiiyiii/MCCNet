@@ -1,15 +1,14 @@
 import jittor as jt
 import numpy as np
 
-#计算平均值和标准差
 def calc_mean_std(feat, eps=1e-5):
     size = feat.size()
-    assert (len(size) == 4)  #如果输入的feature的size长度不等于4，就停止执行
-    N, C = size[:2]    #这个操作可以在外面跑下看结果  获取的是batch的N和channelz
+    assert (len(size) == 4) 
+    N, C = size[:2]  
     #feat_std = jt.std(feat.view(N, C, -1)) + eps
     #feat_std = feat_std.view(N, C, 1, 1)
     #feat_var = jtvar(feat) + eps
-    #feat_mean = feat.view(N, C, -1).mean(dim=2).view(N, C, 1, 1) #将N个中每个C的H*W所有数求平均，然后reshape成每个N中的每个C一个
+    #feat_mean = feat.view(N, C, -1).mean(dim=2).view(N, C, 1, 1) 
     dims = list(range(2,feat.ndim))
 
     N, C, X = feat.size()
