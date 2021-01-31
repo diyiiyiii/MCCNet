@@ -102,17 +102,17 @@ class MCCNet(Module):
         self.f = nn.Conv2d(in_dim, int(in_dim), (1,1))  ##nn.Conv2d(in_Channel,out_Channel,kernal)
         self.g = nn.Conv2d(in_dim, int(in_dim), (1,1))
         self.h = nn.Conv2d(in_dim, int(in_dim), (1,1))
-        self.softmax = nn.Softmax(dim=-2)  #就是对倒数第二个维度进行softmax咩
+        self.softmax = nn.Softmax(dim=-2) 
         self.out_conv = nn.Conv2d(int(in_dim), in_dim, (1,1))
         self.fc = nn.Linear(in_dim, in_dim)
 
     def execute(self, content_feat, style_feat):
-        B, C, G, W = content_feat.size()   #定义后未用到，只是为了对齐叭..
+        B, C, G, W = content_feat.size()  
 
         F_Fc_norm = self.f(normal(content_feat))   #标准化后内容feature传入第一层卷积层
         B, C, H, W = style_feat.size()
-        G_Fs_norm = self.g(normal(style_feat)).view(-1,1,H*W) #这个变形是为了..?
-        G_Fs = self.h(style_feat).view(-1,1,H*W)  #这两个view是为了什么呢...
+        G_Fs_norm = self.g(normal(style_feat)).view(-1,1,H*W) 
+        G_Fs = self.h(style_feat).view(-1,1,H*W) 
 
         G_Fs_sum = G_Fs_norm.view(B, C ,H*W).sum(-1) #算出每个channel上的均值
         FC_S = nn.bmm(G_Fs_norm, G_Fs_norm.permute(0,2,1)).view(B,C) / G_Fs_sum
@@ -128,14 +128,14 @@ class MCCNet(Module):
 
         return out
 
-class MCC_Module(Module):    ##这个是干啥的啊..  用来包装生成迁移图的网络的单元
+class MCC_Module(Module):    
     def __init__(self, in_dim):
         super(MCC_Module,self).__init__()
         self.MCCN = MCCNet(in_dim)
 
     def execute(self, content_feats, style_feats):
 
-        content_feat_4 = content_feats[-2] #-2是..? 倒数第二个feat,即第四个feature
+        content_feat_4 = content_feats[-2] 
         style_feat_4 = style_feats[-2]
         Fcsc = self.MCCN(content_feat_4, style_feat_4)
         return Fcsc
@@ -153,7 +153,7 @@ class Net(Module):
         self.mcc_module = MCC_Module(512)
         self.decoder = decoder
         self.mse_loss = nn.MSELoss()
-        #fix the encoder    ##不用学习..(?)
+        #fix the encoder   
         for name in ['enc_1','enc_2','enc_3','enc_4','enc_5']:
             for param in getattr(self, name).parameters():
                 param.requires_grad = False
@@ -211,9 +211,9 @@ class Net(Module):
 
         loss_s = self.calc_style_loss(Ics_feats[0], style_feats[0])
         for i in range(1, 5):
-            loss_s += self.calc_style_loss(Ics_feats[i], style_feats[i]) #上面那个为什么不合并进来呢
+            loss_s += self.calc_style_loss(Ics_feats[i], style_feats[i])
 
-        #total variation loss   不是特别清楚这是干什么的..
+        #total variation loss  
         y = Ics
         tv_loss = jt.sum(jt.abs(y[:, :, :, :-1] - y[:, :, :, 1:])) + jt.sum(jt.abs(y[:, :, :-1, :] - y[:, :, 1:, :]))
 
@@ -231,7 +231,7 @@ class Net(Module):
         Icc_feats = self.encode_with_intermeidate(Icc)
         Iss_feats = self.encode_with_intermeidate(Iss)
         loss_lambda2 = self.calc_content_loss(Icc_feats[0], content_feats[0]) + \
-                       self.calc_content_loss(Iss_feats[0], style_feats[0])  #这里为啥是content_loss呢
+                       self.calc_content_loss(Iss_feats[0], style_feats[0]) 
         for i in range(1,5):
             loss_lambda2 += self.calc_content_loss(Icc_feats[i], content_feats[i]) + self.calc_content_loss(Iss_feats[i], style_feats[i])
 
