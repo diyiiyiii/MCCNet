@@ -116,8 +116,8 @@ parser.add_argument('--style_dir', type=str,
                     help='Directory path to a batch of style images')
 parser.add_argument('--output', type=str, default='output',
                     help='Directory to save the output image(s)')
-parser.add_argument('--decoder_path', type=str, default='./experiments/decoder_iter_160000.pth')
-parser.add_argument('--transform_path', type=str, default='./experiments/mcc_module_iter_160000.pth')
+parser.add_argument('--decoder_path', type=str, default='./experiments/decoder_iter_160000.pkl')
+parser.add_argument('--transform_path', type=str, default='./experiments/mcc_module_iter_160000.pkl')
 parser.add_argument('--style_interpolation_weights', type=str, default="")
 parser.add_argument('--a', type=float, default=1.0)
 
