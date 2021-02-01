@@ -107,7 +107,7 @@ class MCCNet(Module):
         self.fc = nn.Linear(in_dim, in_dim)
 
     def execute(self, content_feat, style_feat):
-        B, C, G, W = content_feat.size()  
+        B, C, H, W = content_feat.size()  
 
         F_Fc_norm = self.f(normal(content_feat))   #标准化后内容feature传入第一层卷积层
         B, C, H, W = style_feat.size()
