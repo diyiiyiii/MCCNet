@@ -3,12 +3,12 @@ import numpy as np
 
 def calc_mean_std(feat, eps=1e-5):
     size = feat.size()
-    assert (len(size) == 4) 
-    N, C = size[:2]  
+    assert (len(size) == 4)  #如果输入的feature的size长度不等于4，就停止执行
+    N, C = size[:2]    #这个操作可以在外面跑下看结果  获取的是batch的N和channelz
     #feat_std = jt.std(feat.view(N, C, -1)) + eps
     #feat_std = feat_std.view(N, C, 1, 1)
     #feat_var = jtvar(feat) + eps
-    #feat_mean = feat.view(N, C, -1).mean(dim=2).view(N, C, 1, 1) 
+    #feat_mean = feat.view(N, C, -1).mean(dim=2).view(N, C, 1, 1) #将N个中每个C的H*W所有数求平均，然后reshape成每个N中的每个C一个
     dims = list(range(2,feat.ndim))
 
     N, C, H, W = feat.size()
@@ -17,15 +17,13 @@ def calc_mean_std(feat, eps=1e-5):
     xmean = mean * X / (X - 1)
     x2mean = jt.mean(feat * feat, dims=dims) * X / (X - 1)
     xvar = (x2mean - xmean * xmean).maximum(0.0)
-    return mean, jt.sqrt(xvar+eps)
+    return mean.view(N, C, 1, 1), jt.sqrt(xvar+eps).view(N, C, 1, 1)
 
 #标准化
 def normal(feat, eps=1e-5):
-    dims = list(range(2,feat.ndim))
-    feat_mean, feat_std = calc_mean_std(feat, eps)
-    #normalized = (feat - feat_mean)/feat_std
-    norm_feat = (feat - feat_mean.broadcast(feat,dims)) / feat_std.broadcast(feat,dims)
-    return norm_feat
+    feat_mean, feat_std= calc_mean_std(feat, eps)
+    normalized=(feat-feat_mean)/feat_std
+    return normalized
 
 def _calc_feat_flatten_mean_std(feat):
     assert (feat.size()[0]==3)
