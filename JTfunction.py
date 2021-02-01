@@ -2,15 +2,13 @@ import jittor as jt
 import numpy as np
 
 def calc_mean_std(feat, eps=1e-5):
-    size = feat.size()
-    assert (len(size) == 4) 
-    N, C = size[:2]   
-    dims = list(range(2,feat.ndim))
     N, C, H, W = feat.size()
-    X = H * W
+    assert (len(feat.size()) == 4)
+    dims = list(range(2,feat.ndim))
+    X = ( H * W ) / (H * W - 1 )  #用于将方差转换为样本方差
     mean = jt.mean(feat, dims=dims)
-    xmean = mean * X / (X - 1)
-    x2mean = jt.mean(feat * feat, dims=dims) * X / (X - 1)
+    xmean = mean * X
+    x2mean = jt.mean(feat * feat, dims=dims) * X
     xvar = (x2mean - xmean * xmean).maximum(0.0)
     return mean.view(N, C, 1, 1), jt.sqrt(xvar+eps).view(N, C, 1, 1)
 
