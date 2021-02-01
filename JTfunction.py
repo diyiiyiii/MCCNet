@@ -11,7 +11,8 @@ def calc_mean_std(feat, eps=1e-5):
     #feat_mean = feat.view(N, C, -1).mean(dim=2).view(N, C, 1, 1) 
     dims = list(range(2,feat.ndim))
 
-    N, C, X = feat.size()
+    N, C, H, W = feat.size()
+    X = H * W
     mean = jt.mean(feat, dims=dims)
     xmean = mean * X / (X - 1)
     x2mean = jt.mean(feat * feat, dims=dims) * X / (X - 1)
