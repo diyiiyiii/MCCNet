@@ -17,7 +17,7 @@ def calc_mean_std(feat, eps=1e-5):
     xmean = mean * X / (X - 1)
     x2mean = jt.mean(feat * feat, dims=dims) * X / (X - 1)
     xvar = (x2mean - xmean * xmean).maximum(0.0)
-    return xmean, jt.sqrt(xvar+eps)
+    return mean, jt.sqrt(xvar+eps)
 
 #标准化
 def normal(feat, eps=1e-5):
