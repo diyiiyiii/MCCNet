@@ -212,8 +212,9 @@ for i in tqdm(range(args.max_iter)):
     writer.add_image('Ics',Ics.numpy(),i+1)
 
     #optimizer.zero_grad() #梯度置为0，不然会累加计算
-    #loss().sum().sync()
-    optimizer.step(loss.sum())
+    loss = loss.sum()
+    loss.sync()
+    optimizer.step(loss)
 
     writer.add_scalar('loss_content', loss_c.data, i + 1)
     writer.add_scalar('loss_style', loss_s.data, i + 1)
