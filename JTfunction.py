@@ -36,11 +36,11 @@ def matmul(a, b):
 
 def _mat_sqrt(x):
     U, D, V =jt.svd(x)
-    return matmul(matmul(U, D.pow(0.5).diag*()), V.t())
+    return matmul(matmul(U, D.pow(0.5).diag()), V.t())
 
 def coral(source, target):
     #assume both source and target are 3D array (C, H, W)
-    #Note: flatten -> f (?)
+    #Note: flatten -> f 
 
     source_f , source_f_mean, source_f_std = _calc_feat_flatten_mean_std(source)
     source_f_norm = (source_f - source_f_mean.expand_as(source_f)) / source_f_std.expand_As(source_f)
