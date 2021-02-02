@@ -148,8 +148,8 @@ vgg = nn.Sequential(*list(vgg.children())[:44])
 with jt.no_grad():
     network = net.Net(vgg, decoder)
 network.train()
+decoder.eval() 
 
-#decoder.eval() 
 #network.to(device) 
 #network = nn.DataParallel(network, device_ids=[0,1])
 
