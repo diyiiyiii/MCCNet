@@ -1,12 +1,11 @@
 import jittor as jt
-#import torch.backends.cudnn as cudnn 
 from jittor import init
 import jittor.nn as nn
-from jittor.dataset import Dataset 
+from jittor.dataset import Dataset  
 from jittor.dataset import ImageFolder
 from jittor import transform
 import jittor.models as jtmodels
-import torchvision.models as tcmodels   #用于加载pytorch下的vgg参数到jittor下的vgg
+import torchvision.models as tcmodels  
 
 from jittor.dataset.utils import get_random_list, get_order_list, collate_batch, HookTimer
 from collections.abc import Sequence, Mapping
@@ -43,6 +42,15 @@ def train_transform():   #图像预处理方式
     ]
     return transform.Compose(transform_list)
 
+def iter_content():
+    content_dataset_loader = FlatFolderDataset(args.content_dir, content_tf).set_attrs(batch_size=args.batch_size,num_workers=args.n_threads,shuffle=True)
+    return iter(content_dataset_loader)
+
+def iter_style():
+    style_dataset_loader = FlatFolderDataset(args.style_dir, content_tf).set_attrs(batch_size=args.batch_size,num_workers=args.n_threads,shuffle=True)  # 但是没有sampler参数
+    return iter(style_dataset_loader)
+
+
 class FlatFolderDataset(Dataset):
     def __init__(self, root, transform, train=True):
         super(FlatFolderDataset, self).__init__()
@@ -75,6 +83,7 @@ class FlatFolderDataset(Dataset):
     def name(self):
         return 'FlatFolderDataset'
 
+'''   
     def __iter__(self):
         i = self.len - 1
         batch_size = args.batch_size
@@ -97,7 +106,7 @@ class FlatFolderDataset(Dataset):
             batch_data = self.to_jittor(batch_data)
             yield jt.float(batch_data)
             batch_data = []
-
+'''
 
 def adjust_learning_rate(optimizer, iteration_count):
     lr = args.lr / (1.0 + args.lr_decay * iteration_count)
@@ -105,14 +114,12 @@ def adjust_learning_rate(optimizer, iteration_count):
         param_group['lr'] = lr
 
 parser = argparse.ArgumentParser()  #命令行接口
-
 # Basic options
 parser.add_argument('--content_dir', default='../../datasets/train2014', type=str,
                     help='Directory path to a batch of content images')
 parser.add_argument('--style_dir', default='../../datasets/Images', type=str,
                     help='Directory path to a batch of style images')
 parser.add_argument('--vgg', type=str, default='./experiments/vgg_normalised.pth')
-
 #training options
 parser.add_argument('--save_dir', default='./experiments',
                     help='Directory to save the model')
@@ -124,7 +131,7 @@ parser.add_argument('--max_iter', type=int, default=160000)
 parser.add_argument('--batch_size', type=int, default=8)
 parser.add_argument('--style_weight', type=float, default=10.0)
 parser.add_argument('--content_weight', type=float, default=3.0)
-parser.add_argument('--n_threads', type=int, default=0)
+parser.add_argument('--n_threads', type=int, default=16)
 parser.add_argument('--save_model_interval', type=int, default=10000)
 args = parser.parse_args()
 
@@ -138,30 +145,24 @@ if not os.path.exists(args.log_dir):
 writer = SummaryWriter(log_dir = args.log_dir)
 
 decoder = net.decoder
-
-#加载vgg参数
 vgg = net.vgg
 vgg.load_state_dict(torch.load(args.vgg))
-
-
 vgg = nn.Sequential(*list(vgg.children())[:44])
+
 #with jt.no_grad():
 network = net.Net(vgg, decoder)
-network.train()
-#decoder.eval() 
 
-#network.to(device) 
-#network = nn.DataParallel(network, device_ids=[0,1])
+
+network.train()
 
 content_tf = train_transform()
 style_tf = train_transform()
 
-
 #jittor这里直接对获取的数据集进行lorader，不分开成功两步
 #content_dataset = FlatFolderDataset(args.content_dir, content_tf)
-#style_dataset = FlatFolderDataset(args.style_dir, style_tf)  #获得两个数据集，并预处理 
+#style_dataset = FlatFolderDataset(args.style_dir, style_tf)  #获得两个数据集，并预处理 #数据集只是一个数组存放了文件  #在抽取一组batch时进行预处理
 
-#content_iter = iter(Dataset(    #生成迭代器... 将dataloader里的数据生成迭代器
+#content_iter = iter(Dataset(    #生成迭代器... 将dataloader里的数据生成迭代器，类似enumerate..?
 #    style_dataset, batch_size=args.batch_size,
 #    sampler=InfiniteSamplerWrapper(style_dataset),
 #    num_worker = args.n_thread)
@@ -171,12 +172,14 @@ style_tf = train_transform()
 #    sampler=InfiniteSamplerWrapper(style_dataset),
 #    num_workers=args.n_threads))
 
-content_dataset_loader = FlatFolderDataset(args.content_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads)
-style_dataset_loader = FlatFolderDataset(args.style_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads)  #但是没有sampler参数
+#content_dataset_loader = FlatFolderDataset(args.content_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads)
+#style_dataset_loader = FlatFolderDataset(args.style_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads)  #但是没有sampler参数
 
-content_iter = iter(content_dataset_loader)
-style_iter = iter(style_dataset_loader)
+#content_dataset_loader = FlatFolderDataset(args.content_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads, shuffle = True)
+#style_dataset_loader = FlatFolderDataset(args.style_dir, content_tf).set_attrs(batch_size = args.batch_size, num_workers = args.n_threads, shuffle = True)  #但是没有sampler参数
 
+content_iter = iter_content()
+style_iter = iter_style()
 
 
 optimizer = jt.optim.Adam([
@@ -185,8 +188,30 @@ optimizer = jt.optim.Adam([
 
 for i in tqdm(range(args.max_iter)):
     adjust_learning_rate(optimizer, iteration_count=i)
-    content_images = next(content_iter)
-    style_images = next(style_iter)
+
+    try:
+        content_images = next(content_iter)
+    except StopIteration:
+        content_iter = iter_content()
+        content_images = next(content_iter)
+
+    try:
+        style_images = next(style_iter)
+    except StopIteration:
+        style_iter = iter_style()
+        style_images = next(style_iter)
+
+
+    if content_images.size()[0] < args.batch_size:
+        content_iter = iter_content()
+        content_images = next(content_iter)
+
+    if style_images.size()[0] < args.batch_size:
+        style_iter = iter_style()
+        style_images = next(style_iter)
+
+    writer.add_image('content',content_images[0].numpy(), i + 1)
+    writer.add_image('style', style_images[0].numpy(), i + 1)
 
     loss_n, loss_c, loss_s, l_identity1, l_identity2, loss_tv = network(content_images, style_images)
 
@@ -200,7 +225,8 @@ for i in tqdm(range(args.max_iter)):
     loss_c = args.content_weight * loss_c
     loss_s = args.style_weight * loss_s
     loss_tv = 10e-5 * loss_tv
-    loss = 3000 * loss_n + loss_c + loss_s + (l_identity1 *70 ) + (l_identity2 * 1) + loss_tv
+    loss = 3000 * loss_n + loss_c + loss_s + (l_identity1 * 70 ) + (l_identity2 * 1) + loss_tv
+    #loss = loss_c + loss_s
 
 
 
@@ -216,10 +242,11 @@ for i in tqdm(range(args.max_iter)):
     loss.sync()
     optimizer.step(loss)
 
+    #writer.add_scalar('loss_n', loss_n.data, i + 1)
     writer.add_scalar('loss_content', loss_c.data, i + 1)
     writer.add_scalar('loss_style', loss_s.data, i + 1)
-    writer.add_scalar('loss_identity1', l_identity1.data, i + 1)
-    writer.add_scalar('loss_identity2', l_identity2.data, i + 1)
+    #writer.add_scalar('loss_identity1', l_identity1.data, i + 1)
+    #writer.add_scalar('loss_identity2', l_identity2.data, i + 1)
     writer.add_scalar('total_loss', loss.data, i + 1)
 
     if (i + 1) % args.save_model_interval == 0 or (i + 1) == args.max_iter:
