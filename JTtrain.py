@@ -145,8 +145,8 @@ vgg.load_state_dict(torch.load(args.vgg))
 
 
 vgg = nn.Sequential(*list(vgg.children())[:44])
-with jt.no_grad():
-    network = net.Net(vgg, decoder)
+#with jt.no_grad():
+network = net.Net(vgg, decoder)
 network.train()
 #decoder.eval() 
 
