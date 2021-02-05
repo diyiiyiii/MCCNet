@@ -4,6 +4,7 @@ from function import normal
 from function import calc_mean_std
 import scipy.stats as stats
 from torchvision.utils import save_image
+
 decoder = nn.Sequential(
     nn.ReflectionPad2d((1, 1, 1, 1)),
     nn.Conv2d(512, 256, (3, 3)),
@@ -98,7 +99,6 @@ class MCCNet(nn.Module):
         super(MCCNet, self).__init__()
         self.f = nn.Conv2d(in_dim , int(in_dim ), (1,1))
         self.g = nn.Conv2d(in_dim , int(in_dim ) , (1,1))
-        self.h = nn.Conv2d(in_dim  ,int(in_dim ) , (1,1))
         #self.softmax  = nn.Softmax(dim=-1)    #16
         self.softmax  = nn.Softmax(dim=-2)    #17
         self.out_conv = nn.Conv2d(int(in_dim ), in_dim, (1, 1))
@@ -112,8 +112,7 @@ class MCCNet(nn.Module):
         #F_Fc_norm = torch.mul(F_Fc_norm, content_a.view(B,-1,H*W).permute(0,2,1))
 
         B,C,H,W = style_feat.size()
-        G_Fs_norm =  self.g(normal(style_feat)).view(-1,1,H*W) 
-        G_Fs = self.h(style_feat).view(-1,1,H*W) 
+        G_Fs_norm =  self.g(normal(style_feat)).view(-1,1,H*W)
         #print(G_Fs)
         #G_Fs_sum = torch.abs(G_Fs_norm.view(B,C,H*W)).sum(-1)
         G_Fs_sum = G_Fs_norm.view(B,C,H*W).sum(-1)
@@ -129,30 +128,20 @@ class MCCNet(nn.Module):
         #print(F_Fc_norm.size(),G_Fs_norm.size(),)
         
         out = F_Fc_norm*FC_S
-        
         B,C,H,W = content_feat.size()
-       
-        #print(out.size())
         out = out.contiguous().view(B,-1,H,W)
         out = self.out_conv(out)
-        #print("-----out",out)
         out = content_feat + out
-        #print(out)
+
         return out
  
 
 class MCC_Module(nn.Module):
     def __init__(self, in_dim):
         super(MCC_Module, self).__init__()
-        
         self.MCCN=MCCNet(in_dim)
-        
-        
-        # self.upsample = nn.Upsample(scale_factor=2, mode='nearest')
-        # self.merge_conv_pad = nn.ReflectionPad2d((1, 1, 1, 1))
-        # self.merge_conv = nn.Conv2d(in_dim, in_dim, (3, 3))
+
     def forward(self, content_feats, style_feats):
-       
         content_feat_4 = content_feats[-2]
         style_feat_4 = style_feats[-2]
         Fcsc = self.MCCN(content_feat_4, style_feat_4)
@@ -202,13 +191,11 @@ class Net(nn.Module):
         t  = torch.empty(content.size())
 
         std = torch.nn.init.uniform_(s, a=0.01, b=0.02)
-        #print(std[0])
         noise = torch.nn.init.normal(t, mean=0, std=std[0]).cuda()
-        #print(noise)
         content_noise = content + noise
+
         style_feats = self.encode_with_intermediate(style)
         content_feats = self.encode_with_intermediate(content)
-        #content_feats_T = self.encode_with_intermediate(content.permute(0,1,3,2))
         content_feats_N = self.encode_with_intermediate(content_noise)
 
         Ics = self.decoder(self.mcc_module(content_feats, style_feats))
@@ -224,16 +211,13 @@ class Net(nn.Module):
         y = Ics
         tv_loss = torch.sum(torch.abs(y[:, :, :, :-1] - y[:, :, :, 1:])) + torch.sum(torch.abs(y[:, :, :-1, :] - y[:, :, 1:, :]))
 
-        
         Ics_N = self.decoder(self.mcc_module(content_feats_N, style_feats))
         loss_noise = self.calc_content_loss(Ics_N,Ics)
-        
-    
+
         #Identity losses lambda 1
         Icc = self.decoder(self.mcc_module(content_feats, content_feats))
         Iss = self.decoder(self.mcc_module(style_feats, style_feats)) 
-        
-        
+
         loss_lambda1 = self.calc_content_loss(Icc,content)+self.calc_content_loss(Iss,style)
         
         #Identity losses lambda 2
@@ -242,6 +226,6 @@ class Net(nn.Module):
         loss_lambda2 = self.calc_content_loss(Icc_feats[0], content_feats[0])+self.calc_content_loss(Iss_feats[0], style_feats[0])
         for i in range(1, 5):
             loss_lambda2 += self.calc_content_loss(Icc_feats[i], content_feats[i])+self.calc_content_loss(Iss_feats[i], style_feats[i])
-        return loss_noise, loss_c, loss_s, loss_lambda1, loss_lambda2,tv_loss
+        return loss_noise, loss_c, loss_s, loss_lambda1, loss_lambda2,tv_loss, Ics
         #return loss_c, loss_s,loss_lambda1, loss_lambda2, tv_loss
 
