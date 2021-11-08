@@ -23,15 +23,17 @@ def get_files(img_dir):
     return paths
 
 #加载图片
-def load_images(content_dir, style_dir):
-    if os.path.isdir(content_dir):
+def load_images(args):
+    assert (args.content or args.content_dir)
+    assert (args.style or args.style_dir)
+    if not args.content:
         content_paths = get_files(content_dir)
-    else:  # Single image file
-        content_paths = [content_dir]
-    if os.path.isdir(style_dir):
+    else:
+        content_paths = [args.content]
+    if not args.style:
         style_paths = get_files(style_dir)
-    else:  # Single image file
-        style_paths = [style_dir]
+    else:
+        style_paths = [args.style]
     return content_paths, style_paths
 
 #加载模型参数
@@ -268,7 +270,7 @@ if __name__ == '__main__':
     mcc_module.to(device)
     decoder.to(device)
 
-    content_paths, style_paths = load_images(args.content_dir, args.style_dir)
+    content_paths, style_paths = load_images(args)
     test(content_paths, style_paths)
 
 
