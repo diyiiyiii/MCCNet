@@ -99,6 +99,7 @@ class MCCNet(nn.Module):
         super(MCCNet, self).__init__()
         self.f = nn.Conv2d(in_dim , int(in_dim ), (1,1))
         self.g = nn.Conv2d(in_dim , int(in_dim ) , (1,1))
+        self.h = nn.Conv2d(in_dim, int(in_dim), (1,1))
         #self.softmax  = nn.Softmax(dim=-1)    #16
         self.softmax  = nn.Softmax(dim=-2)    #17
         self.out_conv = nn.Conv2d(int(in_dim ), in_dim, (1, 1))
