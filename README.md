@@ -47,4 +47,13 @@ If you use our work in your research, please cite us using the following BibTeX 
   year={2021},
  
 }
+@ARTICLE{10008203,
+  author={Kong, Xiaoyu and Deng, Yingying and Tang, Fan and Dong, Weiming and Ma, Chongyang and Chen, Yongyong and He, Zhenyu and Xu, Changsheng},
+  journal={IEEE Transactions on Neural Networks and Learning Systems}, 
+  title={Exploring the Temporal Consistency of Arbitrary Style Transfer: A Channelwise Perspective}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-15},
+  doi={10.1109/TNNLS.2022.3230084}}
 ```
